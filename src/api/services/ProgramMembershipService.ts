@@ -2,7 +2,6 @@ import { FilterQuery } from 'mongoose';
 import { BaseService, PaginationOptions, SortOptions } from './BaseService';
 import { ProgramMembershipModel } from '../models/ProgramMembership';
 import { UserModel } from '../models/User';
-import { ProgramModel } from '../models/Program';
 import { BrandModel } from '../models/Brand';
 import { v5 as uuidv5 } from 'uuid';
 
@@ -53,9 +52,8 @@ export class ProgramMembershipService extends BaseService {
 
       const memberships = await Promise.all(
         result.data.map(async (membership) => {
-          const [user, program, brand] = await Promise.all([
+          const [user, brand] = await Promise.all([
             UserModel.findOne({ user_id: membership.user_id }).lean(),
-            ProgramModel.findOne({ program_id: membership.program_id }).lean(),
             BrandModel.findOne({ brand_id: membership.brand_id }).lean()
           ]);
 
@@ -85,9 +83,8 @@ export class ProgramMembershipService extends BaseService {
         throw new Error('Program membership not found');
       }
 
-      const [user, program, brand] = await Promise.all([
+      const [user, brand] = await Promise.all([
         UserModel.findOne({ user_id: membership.user_id }).lean(),
-        ProgramModel.findOne({ program_id: membership.program_id }).lean(),
         BrandModel.findOne({ brand_id: membership.brand_id }).lean()
       ]);
 
@@ -126,7 +123,7 @@ export class ProgramMembershipService extends BaseService {
       const membershipId = uuidv5(`${userId}-${programId}`, NAMESPACE);
 
       // Exclude fields that are handled by $setOnInsert to avoid conflicts
-      const { joined_at, membership_id, user_id, program_id, ...dataToSet } = data;
+      const { joined_at, membership_id: _membership_id, user_id: _user_id, program_id: _program_id, ...dataToSet } = data;
 
       const updateOps: any = {
         $set: dataToSet,

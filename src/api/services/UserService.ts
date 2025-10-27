@@ -115,7 +115,7 @@ export class UserService extends BaseService {
   async upsert(userId: string, userData: Partial<UserData>) {
     try {
       // Exclude user_id from $set to avoid conflict with $setOnInsert
-      const { user_id, ...dataToSet } = userData;
+      const { user_id: _user_id, ...dataToSet } = userData;
 
       const user = await UserModel.findOneAndUpdate(
         { user_id: userId },

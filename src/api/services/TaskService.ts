@@ -2,7 +2,6 @@ import { FilterQuery } from 'mongoose';
 import { BaseService, PaginationOptions, SortOptions } from './BaseService';
 import { TaskModel } from '../models/Task';
 import { UserModel } from '../models/User';
-import { ProgramModel } from '../models/Program';
 import { BrandModel } from '../models/Brand';
 
 export interface TaskData {
@@ -56,9 +55,8 @@ export class TaskService extends BaseService {
 
       const tasks = await Promise.all(
         result.data.map(async (task) => {
-          const [user, program, brand] = await Promise.all([
+          const [user, brand] = await Promise.all([
             UserModel.findOne({ user_id: task.user_id }).lean(),
-            ProgramModel.findOne({ program_id: task.program_id }).lean(),
             BrandModel.findOne({ brand_id: task.brand_id }).lean()
           ]);
 
@@ -88,9 +86,8 @@ export class TaskService extends BaseService {
         throw new Error('Task not found');
       }
 
-      const [user, program, brand] = await Promise.all([
+      const [user, brand] = await Promise.all([
         UserModel.findOne({ user_id: task.user_id }).lean(),
-        ProgramModel.findOne({ program_id: task.program_id }).lean(),
         BrandModel.findOne({ brand_id: task.brand_id }).lean()
       ]);
 
@@ -130,7 +127,7 @@ export class TaskService extends BaseService {
   async upsert(taskId: string, taskData: Partial<TaskData>) {
     try {
       // Exclude task_id from $set to avoid conflict with $setOnInsert
-      const { task_id, ...dataToSet } = taskData;
+      const { task_id: _task_id, ...dataToSet } = taskData;
 
       const task = await TaskModel.findOneAndUpdate(
         { task_id: taskId },
