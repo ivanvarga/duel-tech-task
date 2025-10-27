@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Purple background - Analytics Dashboard -->
+  <circle cx="50" cy="50" r="48" fill="#9333EA"/>
+
+  <!-- Simplified "D" from Duel logo -->
+  <path fill="#FFFFFF" d="M 30 25 L 30 75 L 50 75 C 62 75 70 67 70 50 C 70 33 62 25 50 25 Z M 38 33 L 50 33 C 57 33 62 38 62 50 C 62 62 57 67 50 67 L 38 67 Z"/>
+
+  <!-- Diamond accent (rotated square from Duel logo) -->
+  <rect x="70" y="44" width="12" height="12" fill="#FFFFFF" transform="rotate(19 76 50)"/>
+</svg>

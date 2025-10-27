@@ -1,0 +1,19 @@
+# Admin Dashboard Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3002
+
+# Start development server
+CMD ["yarn", "dev", "--host", "0.0.0.0"]

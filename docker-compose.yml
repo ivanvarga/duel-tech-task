@@ -1,0 +1,104 @@
+# Docker Compose Configuration
+# Runs MongoDB + API Server + Admin Dashboard + Analytics Dashboard
+
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: advocacy-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - full
+      - api
+      - minimal
+
+  # API Server (all routes enabled)
+  api:
+    build: .
+    container_name: advocacy-api
+    ports:
+      - "3000:3000"
+    environment:
+      # All routes enabled for development
+      ENABLE_ADMIN_ROUTES: "true"
+      ENABLE_WORKER_ROUTES: "true"
+      ENABLE_WEB_ROUTES: "true"
+
+      # Database connection (uses Docker network)
+      MONGODB_URI: mongodb://mongodb:27017/advocacy_platform
+
+      # Server config
+      NODE_ENV: development
+      PORT: 3000
+      HOST: 0.0.0.0
+      LOG_LEVEL: info
+
+      # Storage
+      STORAGE_TYPE: local
+      USER_FILES_PATH: /app/users
+
+      # CORS
+      CORS_ORIGIN: "*"
+    volumes:
+      - ./users:/app/users
+      - ./data.tar.gz:/app/data.tar.gz:ro
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    command: npm start
+    profiles:
+      - full
+      - api
+
+  # Analytics Dashboard (React + Vite)
+  analytics-dashboard:
+    build:
+      context: ./analytics-dashboard
+      dockerfile: Dockerfile
+    container_name: advocacy-analytics
+    ports:
+      - "3001:3001"
+    environment:
+      # API endpoint (uses Docker network)
+      VITE_API_URL: http://api:3000
+    volumes:
+      - ./analytics-dashboard/src:/app/src
+      - ./analytics-dashboard/public:/app/public
+    depends_on:
+      - api
+    profiles:
+      - full
+      - dashboards
+
+  # Admin Dashboard (React Admin + Vite)
+  admin-dashboard:
+    build:
+      context: ./admin-dashboard
+      dockerfile: Dockerfile
+    container_name: advocacy-admin
+    ports:
+      - "3002:3002"
+    environment:
+      # API endpoint (uses Docker network)
+      VITE_API_URL: http://api:3000
+    volumes:
+      - ./admin-dashboard/src:/app/src
+      - ./admin-dashboard/public:/app/public
+    depends_on:
+      - api
+    profiles:
+      - full
+      - dashboards
+
+volumes:
+  mongodb_data:
