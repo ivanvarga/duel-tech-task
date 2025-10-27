@@ -3,3 +3,4 @@
 
 echo "🔍 Running pre-push checks..."
 yarn typecheck && yarn lint
+yarn typecheck && yarn lint
