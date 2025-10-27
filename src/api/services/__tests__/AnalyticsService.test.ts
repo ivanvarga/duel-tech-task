@@ -33,11 +33,9 @@ describe('AnalyticsService - Integration Tests', () => {
   });
 
   describe('Test Data Setup', () => {
-    let testData: any;
-
     beforeEach(async () => {
       // Create comprehensive test dataset
-      const user1 = await UserModel.create({
+      await UserModel.create({
         user_id: 'user-001',
         name: 'Alice Johnson',
         email: 'alice@example.com',
@@ -45,7 +43,7 @@ describe('AnalyticsService - Integration Tests', () => {
         joined_at: new Date('2024-01-01')
       });
 
-      const user2 = await UserModel.create({
+      await UserModel.create({
         user_id: 'user-002',
         name: 'Bob Smith',
         email: 'bob@example.com',
@@ -53,33 +51,33 @@ describe('AnalyticsService - Integration Tests', () => {
         joined_at: new Date('2024-01-15')
       });
 
-      const brand1 = await BrandModel.create({
+      await BrandModel.create({
         brand_id: 'brand-001',
         name: 'Nike',
         company_id: 'company-001'
       });
 
-      const brand2 = await BrandModel.create({
+      await BrandModel.create({
         brand_id: 'brand-002',
         name: 'Adidas',
         company_id: 'company-001'
       });
 
-      const program1 = await ProgramModel.create({
+      await ProgramModel.create({
         program_id: 'program-001',
         brand_id: 'brand-001',
         company_id: 'company-001',
         status: 'active'
       });
 
-      const program2 = await ProgramModel.create({
+      await ProgramModel.create({
         program_id: 'program-002',
         brand_id: 'brand-002',
         company_id: 'company-001',
         status: 'active'
       });
 
-      const membership1 = await ProgramMembershipModel.create({
+      await ProgramMembershipModel.create({
         membership_id: 'membership-001',
         user_id: 'user-001',
         program_id: 'program-001',
@@ -89,7 +87,7 @@ describe('AnalyticsService - Integration Tests', () => {
         joined_at: new Date('2024-01-01')
       });
 
-      const membership2 = await ProgramMembershipModel.create({
+      await ProgramMembershipModel.create({
         membership_id: 'membership-002',
         user_id: 'user-002',
         program_id: 'program-002',
@@ -153,13 +151,6 @@ describe('AnalyticsService - Integration Tests', () => {
         engagement_rate: 0.115,
         submitted_at: tenDaysAgo
       });
-
-      testData = {
-        users: [user1, user2],
-        brands: [brand1, brand2],
-        programs: [program1, program2],
-        memberships: [membership1, membership2]
-      };
     });
 
     describe('getBrandAnalytics()', () => {

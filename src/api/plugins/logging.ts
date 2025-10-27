@@ -1,7 +1,7 @@
 import { Plugin } from '@hapi/hapi';
 import { logger } from '../../utils/logger';
 
-export const loggingPlugin: Plugin<{}> = {
+export const loggingPlugin: Plugin<Record<string, never>> = {
   name: 'logging-plugin',
   version: '1.0.0',
   register: async (server) => {

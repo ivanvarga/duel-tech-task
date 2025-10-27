@@ -114,6 +114,7 @@ export function parseJSON(rawData: string): RepairResult {
       repaired: false
     };
   } catch (_error) {
+    // If JSON parsing fails, continue to structural repair
   }
 
   return repairJSONStructure(rawData);
